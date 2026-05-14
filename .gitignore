@@ -1,0 +1,8 @@
+.DS_Store
+*.swp
+.vscode/
+.idea/
+node_modules/
+
+# Source research materials — not part of the shipping skill
+joe_gebbia_nds_skill_package/Gebbia-DOCS/

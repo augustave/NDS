@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HELLO, NDS — A Skill Package Specimen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#F5F5F3;
+    --void:#0E2A9C;
+    --ink:#111111;
+    --red:#D23B30;
+    --green:#5CDB5C;
+    --yellow:#F5C542;
+    --hairline: 1px solid var(--ink);
+    --heavy: 2px solid var(--ink);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--canvas);color:var(--ink);font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{font-size:13px;line-height:1.45;letter-spacing:-0.005em}
+  .mono{font-family:'Space Mono','Courier New',monospace;font-size:10px;letter-spacing:0.04em;text-transform:uppercase}
+  .micro{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:500}
+  h1,h2,h3,h4{font-weight:900;letter-spacing:-0.02em;line-height:0.92}
+  a{color:inherit}
+
+  /* ===== BASELINE GRID OVERLAY ===== */
+  .baseline{position:relative}
+  .baseline::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(to bottom, rgba(17,17,17,0.07) 0 1px, transparent 1px 24px);
+    z-index:0;
+  }
+
+  /* ===== PAGE FRAME ===== */
+  .frame{
+    max-width:1440px;margin:0 auto;padding:24px;
+    border-left:var(--hairline);border-right:var(--hairline);
+    position:relative;background:var(--canvas);
+  }
+
+  /* ===== MASTHEAD ===== */
+  .masthead{
+    border-top:var(--heavy);border-bottom:var(--heavy);
+    padding:14px 0 12px;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:16px;
+  }
+  .masthead .left{display:flex;gap:18px;align-items:end}
+  .masthead .right{display:flex;gap:18px;align-items:end;justify-content:flex-end;text-align:right}
+  .masthead .left>div, .masthead .right>div{display:flex;flex-direction:column;gap:2px}
+  .masthead .center{font-size:9px;letter-spacing:0.3em;text-align:center}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle}
+
+  /* ===== HERO ===== */
+  .hero{
+    display:grid;grid-template-columns:7fr 5fr;gap:0;border-bottom:var(--heavy);
+    position:relative;min-height:560px;
+  }
+  .hero .word{
+    border-right:var(--heavy);padding:32px 28px 24px;position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .hello-display{
+    font-size:clamp(120px,18vw,260px);
+    font-weight:900;line-height:0.82;letter-spacing:-0.05em;
+    color:transparent;-webkit-text-stroke:3px var(--ink);
+  }
+  .hello-display .red{-webkit-text-stroke-color:var(--red)}
+  .hello-display em{font-style:normal;color:var(--ink);-webkit-text-stroke:0}
+  .hello-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:var(--hairline);padding-top:10px;margin-top:24px}
+  .hello-meta>div{padding:4px 8px 0 0;border-right:var(--hairline)}
+  .hello-meta>div:last-child{border-right:none}
+
+  .hero .pass{padding:24px 24px;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+
+  /* Boarding pass at 45deg */
+  .boarding{
+    background:var(--canvas);border:var(--heavy);padding:0;width:520px;max-width:120%;
+    transform:rotate(-6deg);transform-origin:top left;
+    margin-top:8px;margin-left:-12px;box-shadow:6px 6px 0 var(--ink);
+    display:grid;grid-template-columns:3fr 1fr;
+  }
+  .boarding .stub{border-left:1px dashed var(--ink);background:var(--ink);color:var(--canvas);padding:14px 12px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start}
+  .boarding .body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+  .boarding h3{font-size:22px}
+  .boarding .row{display:flex;justify-content:space-between;border-top:var(--hairline);padding-top:6px;gap:12px}
+  .boarding .row>div{display:flex;flex-direction:column}
+  .boarding .barcode{display:flex;gap:1px;height:36px;align-items:stretch;margin-top:6px}
+  .boarding .barcode i{display:block;background:var(--ink);width:2px}
+  .boarding .barcode i:nth-child(3n){width:1px}
+  .boarding .barcode i:nth-child(5n){width:4px}
+  .boarding .barcode i:nth-child(7n){width:3px;background:var(--red)}
+
+  /* Hero side stack */
+  .stack{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+  .pill{border:var(--heavy);padding:6px 10px;display:inline-block}
+  .pill.red{border-color:var(--red);color:var(--red)}
+
+  /* Vertical edge label */
+  .edge{
+    position:absolute;top:24px;right:-6px;writing-mode:vertical-rl;transform:rotate(180deg);
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;
+  }
+
+  /* ===== STRIP ===== */
+  .strip{display:grid;grid-template-columns:repeat(12,1fr);border-bottom:var(--heavy)}
+  .strip>div{border-right:var(--hairline);padding:8px 10px;font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em}
+  .strip>div:last-child{border-right:none}
+  .strip .red{color:var(--red)}
+  .strip .ink{background:var(--ink);color:var(--canvas)}
+
+  /* ===== MULTI COLUMN BODY ===== */
+  .spread{display:grid;grid-template-columns:2fr 5fr 5fr;gap:0;border-bottom:var(--heavy)}
+  .spread>section{padding:24px 22px;border-right:var(--hairline)}
+  .spread>section:last-child{border-right:none}
+  .col-label{display:flex;justify-content:space-between;border-bottom:var(--hairline);padding-bottom:6px;margin-bottom:14px}
+  .col-label .num{color:var(--red)}
+  .lede{font-size:22px;line-height:1.18;font-weight:700;letter-spacing:-0.015em;margin-bottom:18px}
+  .lede em{font-style:italic;color:var(--red)}
+  p{margin-bottom:10px;font-size:13px}
+  .dropcap::first-letter{
+    float:left;font-size:64px;line-height:0.85;font-weight:900;
+    padding:6px 8px 0 0;color:var(--red);
+  }
+
+  /* TOC / index */
+  .toc{display:flex;flex-direction:column;gap:0}
+  .toc-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;border-bottom:var(--hairline);padding:6px 0;align-items:baseline}
+  .toc-row .n{font-family:'Space Mono',monospace;font-size:10px;color:var(--red)}
+  .toc-row .t{font-weight:700;font-size:13px}
+  .toc-row .p{font-family:'Space Mono',monospace;font-size:10px}
+
+  /* ===== DOCTRINE 7 PILLARS ===== */
+  .doctrine{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:var(--heavy)}
+  .doctrine .pillar{border-right:var(--hairline);padding:18px 14px 22px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+  .doctrine .pillar:last-child{border-right:none}
+  .doctrine .num{font-family:'Space Mono',monospace;font-size:10px}
+  .doctrine .num b{color:var(--red);font-weight:700}
+  .doctrine h4{font-size:18px;line-height:1.02;margin:14px 0 8px}
+  .doctrine .pillar p{font-size:11px;line-height:1.4}
+  .doctrine .pillar .seal{
+    width:32px;height:32px;border:var(--hairline);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;
+    margin-top:auto;
+  }
+  .doctrine .pillar:nth-child(7) .seal{border-color:var(--red);color:var(--red)}
+
+  /* ===== TENSIONS ===== */
+  .tensions{
+    display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+    background:var(--void);color:var(--canvas);border-bottom:var(--heavy);
+  }
+  .tensions .t-head{
+    grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;
+    padding:20px 22px;border-bottom:1px solid rgba(245,245,243,0.2)
+  }
+  .tensions .t-head h2{font-size:36px;font-weight:900}
+  .tensions .t-head h2 em{color:var(--yellow);font-style:normal}
+  .tensions .t{padding:20px 16px;border-right:1px solid rgba(245,245,243,0.2);min-height:280px;display:flex;flex-direction:column;gap:10px}
+  .tensions .t:last-child{border-right:none}
+  .tensions .t .label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green)}
+  .tensions .t h5{font-size:16px;font-weight:700;line-height:1.1}
+  .tensions .t .vs{font-size:24px;font-weight:900;color:var(--red);letter-spacing:-0.02em}
+  .tensions .t small{font-family:'Space Mono',monospace;font-size:10px;line-height:1.4;color:var(--yellow);text-transform:uppercase;letter-spacing:0.04em}
+  .tensions .t p{font-size:11px;line-height:1.4;color:rgba(245,245,243,0.85)}
+
+  /* ===== SWARM NETWORK ===== */
+  .swarm{display:grid;grid-template-columns:5fr 7fr;border-bottom:var(--heavy)}
+  .swarm .copy{border-right:var(--hairline);padding:24px 22px}
+  .swarm .copy h2{font-size:64px;line-height:0.85;margin-bottom:14px;
+    color:transparent;-webkit-text-stroke:2px var(--ink);}
+  .swarm .copy h2 em{font-style:normal;color:var(--red);-webkit-text-stroke:0}
+  .swarm .copy .roster{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+  .swarm .copy .roster div{display:grid;grid-template-columns:24px 1fr;gap:6px;border-top:var(--hairline);padding:5px 0;font-size:11px}
+  .swarm .copy .roster div .n{font-family:'Space Mono',monospace;color:var(--red)}
+  .swarm .net{position:relative;padding:24px;min-height:540px;background:var(--canvas)}
+  .net svg{width:100%;height:100%}
+
+  /* ===== METHODOLOGY STREAM ===== */
+  .stream-section{padding:22px 22px;border-bottom:var(--heavy)}
+  .stream-section .hd{display:flex;justify-content:space-between;align-items:baseline;border-bottom:var(--hairline);padding-bottom:10px;margin-bottom:14px}
+  .stream-section h2{font-size:42px;letter-spacing:-0.02em}
+  .stream{display:grid;grid-template-columns:repeat(28,1fr);gap:2px;height:48px;margin-bottom:14px}
+  .stream span{display:block}
+  .stream .ink-b{background:var(--ink)}
+  .stream .red-b{background:var(--red)}
+  .stream .y-b{background:var(--yellow)}
+  .stream .g-b{background:var(--green)}
+  .stream .v-b{background:var(--void)}
+  .stream .x-b{background:transparent;border:1px solid var(--ink)}
+  .phases{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
+  .phases .ph{border-right:var(--hairline);padding:8px 10px 12px}
+  .phases .ph:last-child{border-right:none}
+  .phases .ph .n{font-family:'Space Mono',monospace;font-size:10px;color:var(--red)}
+  .phases .ph h4{font-size:14px;margin:4px 0}
+  .phases .ph p{font-size:10px;line-height:1.4}
+
+  /* ===== STAT BAR ===== */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:var(--heavy);background:var(--ink);color:var(--canvas)}
+  .stats .s{padding:22px 18px;border-right:1px solid rgba(245,245,243,0.2)}
+  .stats .s:last-child{border-right:none}
+  .stats .s .big{font-size:56px;font-weight:900;letter-spacing:-0.04em;line-height:1}
+  .stats .s .big.red{color:var(--red)}
+  .stats .s .big.y{color:var(--yellow)}
+  .stats .s .big.g{color:var(--green)}
+  .stats .s small{display:block;font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;margin-top:8px;color:rgba(245,245,243,0.75)}
+
+  /* ===== STIPPLE ===== */
+  .stipple{
+    position:relative;border-bottom:var(--heavy);overflow:hidden;
+    display:grid;grid-template-columns:5fr 7fr;
+  }
+  .stipple .left{padding:24px 22px;border-right:var(--hairline)}
+  .stipple .right{padding:0;position:relative;height:380px}
+  .stipple canvas{position:absolute;inset:0;width:100%;height:100%}
+
+  /* ===== FOOTER ===== */
+  footer{padding:18px 22px;display:grid;grid-template-columns:2fr 2fr 1fr;gap:14px;align-items:end;border-top:var(--heavy)}
+  footer .colophon{font-size:11px}
+  footer .barcode{display:flex;gap:1px;height:42px;align-items:stretch}
+  footer .barcode i{background:var(--ink);width:2px}
+  footer .barcode i:nth-child(3n){width:1px}
+  footer .barcode i:nth-child(5n){width:4px}
+
+  /* CTA strip */
+  .cta{
+    display:grid;grid-template-columns:1fr auto auto;align-items:center;
+    background:var(--red);color:var(--canvas);padding:14px 22px;border-bottom:var(--heavy);
+    gap:12px;
+  }
+  .cta h3{font-size:22px;font-weight:900;letter-spacing:-0.01em}
+  .cta .btn{
+    background:var(--canvas);color:var(--ink);padding:10px 16px;border:var(--heavy);
+    font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;
+    box-shadow:4px 4px 0 var(--ink);text-decoration:none;
+  }
+  .cta .btn.alt{background:var(--ink);color:var(--canvas)}
+
+  /* Network nodes hover-ish */
+  .node circle{transition: r 0.2s ease, fill 0.2s ease}
+
+  /* Responsive */
+  @media (max-width: 980px){
+    .hero{grid-template-columns:1fr}
+    .hero .word{border-right:none;border-bottom:var(--heavy)}
+    .spread{grid-template-columns:1fr}
+    .spread>section{border-right:none;border-bottom:var(--hairline)}
+    .doctrine{grid-template-columns:repeat(2,1fr)}
+    .doctrine .pillar:nth-child(odd){border-right:var(--hairline)}
+    .tensions{grid-template-columns:1fr}
+    .tensions .t{border-right:none;border-bottom:1px solid rgba(245,245,243,0.2);min-height:auto}
+    .swarm{grid-template-columns:1fr}
+    .swarm .copy{border-right:none;border-bottom:var(--heavy)}
+    .phases{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .stipple{grid-template-columns:1fr}
+    .boarding{width:100%;transform:rotate(-3deg)}
+  }
+</style>
+</head>
+<body>
+
+<div class="frame baseline">
+
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="masthead mono">
+    <div class="left">
+      <div>
+        <span class="micro">Vol. 01 · No. 01</span>
+        <span><span class="dot"></span>NATIONAL DESIGN STUDIO</span>
+      </div>
+      <div>
+        <span class="micro">ISSUE</span>
+        <span>Specimen · 1.1.0</span>
+      </div>
+    </div>
+    <div class="center">
+      A SPECIMEN OF THE JOE&nbsp;GEBBIA&nbsp;·&nbsp;NDS&nbsp;CHIEF&nbsp;DESIGN&nbsp;OFFICER SKILL PACKAGE
+    </div>
+    <div class="right">
+      <div>
+        <span class="micro">Filed</span>
+        <span>2026 · 05 · 13</span>
+      </div>
+      <div>
+        <span class="micro">Authority</span>
+        <span>EO 14338</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="word">
+      <div>
+        <div class="mono" style="margin-bottom:18px;display:flex;justify-content:space-between">
+          <span>Cover · 01</span>
+          <span>FILE&nbsp;//&nbsp;NDS-GEBBIA-001</span>
+        </div>
+        <div class="hello-display">
+          <div>HELLO,</div>
+          <div class="red">N<em>D</em>S.</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:15px;line-height:1.35;font-weight:500;max-width:64ch;margin-top:18px">
+          A modular agent skill for operating inside the National Design Studio mandate — modernizing
+          ~27,000 federal domains, paper forms, signage systems, and front-desk service flows
+          before <strong>July 4, 2026</strong>. Two skills, one knowledge base, ten agents.
+        </p>
+        <div class="hello-meta mono">
+          <div><span class="micro">Authority</span><span>EO&nbsp;14338</span></div>
+          <div><span class="micro">Signed</span><span>2025·08·21</span></div>
+          <div><span class="micro">Deadline</span><span>2026·07·04</span></div>
+          <div><span class="micro">Scope</span><span>~27,000 domains</span></div>
+        </div>
+      </div>
+      <span class="edge">FILE-REF · NDS / SKILL / GEBBIA / 1.1.0 · CDO</span>
+    </div>
+
+    <div class="pass">
+      <div class="mono" style="display:flex;justify-content:space-between">
+        <span>Issued · By</span>
+        <span class="red">CHIEF DESIGN OFFICER</span>
+      </div>
+
+      <div class="boarding">
+        <div class="body">
+          <div class="mono" style="display:flex;justify-content:space-between">
+            <span>NDS · BOARDING PASS</span>
+            <span>SEAT 7A</span>
+          </div>
+          <h3>FRAGMENTED&nbsp;→&nbsp;ONE&nbsp;GOVERNMENT</h3>
+          <div class="row mono">
+            <div><span class="micro">From</span><span>FRG / Fragmented</span></div>
+            <div><span class="micro">To</span><span>ONE / Coherent</span></div>
+            <div><span class="micro">Via</span><span>USWDS</span></div>
+          </div>
+          <div class="row mono">
+            <div><span class="micro">Depart</span><span>NOW</span></div>
+            <div><span class="micro">Arrive</span><span>JUL·04·2026</span></div>
+            <div><span class="micro">Class</span><span>CIVIC</span></div>
+          </div>
+          <div class="barcode" aria-hidden="true">
+            <!-- programmatic-looking barcode -->
+            <script>document.write(Array.from({length:60}).map(()=>'<i></i>').join(''))</script>
+          </div>
+        </div>
+        <div class="stub">
+          <span class="mono" style="color:var(--canvas)">PASS</span>
+          <span class="mono" style="font-size:26px;font-weight:700;line-height:1;color:var(--canvas)">NDS<br/>1.1.0</span>
+          <span class="mono" style="color:var(--green)">VALID</span>
+        </div>
+      </div>
+
+      <div class="stack">
+        <span class="pill mono">SKILL · CHIEF DESIGN OFFICER</span>
+        <span class="pill red mono">SWARM · 10 AGENTS</span>
+        <span class="pill mono">KB · CANONICAL REFERENCE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TICKER STRIP ===================== -->
+  <section class="strip">
+    <div class="ink">// LIVE</div>
+    <div>USWDS</div>
+    <div class="red">§ 508</div>
+    <div>§ 504</div>
+    <div>21ST CENTURY IDEA</div>
+    <div>PLAIN WRITING 2010</div>
+    <div class="red">WCAG 2.0 AA</div>
+    <div>ONE GOVERNMENT</div>
+    <div>TECHFORCE</div>
+    <div class="red">CDO ↔ CBA</div>
+    <div>EO 14338</div>
+    <div class="ink">// END</div>
+  </section>
+
+  <!-- ===================== EDITORIAL SPREAD ===================== -->
+  <section class="spread">
+    <section>
+      <div class="col-label mono">
+        <span><span class="num">§ 01</span> · INDEX</span>
+        <span>p. 03</span>
+      </div>
+      <div class="toc">
+        <div class="toc-row"><span class="n">01</span><span class="t">Mandate Frame</span><span class="p">p.04</span></div>
+        <div class="toc-row"><span class="n">02</span><span class="t">Core Doctrine · 7 Pillars</span><span class="p">p.05</span></div>
+        <div class="toc-row"><span class="n">03</span><span class="t">Strategic Tensions</span><span class="p">p.07</span></div>
+        <div class="toc-row"><span class="n">04</span><span class="t">The Swarm · 10 Agents</span><span class="p">p.09</span></div>
+        <div class="toc-row"><span class="n">05</span><span class="t">Methodology · 7 Phases</span><span class="p">p.12</span></div>
+        <div class="toc-row"><span class="n">06</span><span class="t">Baseline · Pre-NDS</span><span class="p">p.14</span></div>
+        <div class="toc-row"><span class="n">07</span><span class="t">Canonical Archetypes</span><span class="p">p.15</span></div>
+        <div class="toc-row"><span class="n">08</span><span class="t">Colophon · Files</span><span class="p">p.16</span></div>
+      </div>
+      <div style="margin-top:22px" class="mono">
+        <div class="micro" style="margin-bottom:6px">SPECIMEN ID</div>
+        <div>NDS-GEBBIA · v1.1.0</div>
+        <div style="margin-top:6px;color:var(--red)">DRAFT · MEDIUM RISK</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="col-label mono">
+        <span><span class="num">§ 02</span> · THE MANDATE</span>
+        <span>p. 04</span>
+      </div>
+      <p class="lede">A founder-designer is asked to redraw the interface of a federal government across <em>27,000 domains</em>, six stressed citizen archetypes, and every paper form on every desk — in twelve months.</p>
+      <p class="dropcap">The America by Design initiative, established by Executive Order 14338 on August 21, 2025, created a temporary studio inside the Executive Office of the President. Its remit: improve the usability and aesthetics of federal digital services, improve physical service environments, reduce duplicated design cost through standardized systems, and produce visible results by July 4, 2026.</p>
+      <p>This skill package operationalizes the public role of the Chief Design Officer leading that mandate. It does not impersonate the person. It models the position — a product-minded executive working at the seam between private-sector velocity and public-sector accountability.</p>
+      <p>It ships in three artifacts: a single-agent <strong>SKILL.md</strong> for advisory and assessment work, a multi-agent <strong>SWARM.md</strong> for full-service redesigns, and a canonical <strong>NDS_KB.md</strong> grounding every claim in statute, baseline, and tension.</p>
+    </section>
+
+    <section>
+      <div class="col-label mono">
+        <span><span class="num">§ 03</span> · WHAT IT DOES</span>
+        <span>p. 04</span>
+      </div>
+      <p class="lede">Treat the website, the form, the kiosk, the queue, the wall sign, the staff script, the confirmation email, and the design system behind all of it as <em>one product</em>.</p>
+      <p>The skill produces a <strong>strategic assessment</strong>, a <strong>friction map</strong> from arrival to appeal, a <strong>design-system alignment</strong> against USWDS, a <strong>physical-digital translation</strong> for offices and signage, a <strong>risk register</strong> against ten public-sector categories, and an <strong>executive decision brief</strong> that separates what can ship now from what requires governance.</p>
+      <p>The swarm decomposes the same problem across ten specialized agents — Coordinator, Civic Research, Service Blueprint, Design System, Brand Architect, Accessibility, Physical Environment, Policy &amp; Risk, Implementation, Communications — with structured handoffs and a non-negotiable launch gate.</p>
+      <p class="mono" style="margin-top:14px;color:var(--red)">// ACCESSIBILITY IS NOT NEGOTIABLE. NEITHER IS THE PHYSICAL OFFICE.</p>
+    </section>
+  </section>
+
+  <!-- ===================== DOCTRINE · 7 PILLARS ===================== -->
+  <section class="stream-section" style="border-bottom:none;padding-bottom:0">
+    <div class="hd">
+      <h2>The Doctrine.</h2>
+      <span class="mono">§ 02 · CORE PILLARS · 07</span>
+    </div>
+  </section>
+  <section class="doctrine">
+    <div class="pillar">
+      <div>
+        <span class="num"><b>01</b> · LEGIBILITY</span>
+        <h4>Make the government legible.</h4>
+        <p>Every interaction answers: where am I, what can I do, what's needed from me, what happens next, how long, and who is responsible.</p>
+      </div>
+      <div class="seal">L01</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <span class="num"><b>02</b> · FRICTION</span>
+        <h4>Cut useless friction. Keep necessary friction.</h4>
+        <p>Remove duplicate forms, repeated logins, PDF-only flows. Preserve identity verification, fraud prevention, appeal rights.</p>
+      </div>
+      <div class="seal">F02</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <span class="num"><b>03</b> · INFRASTRUCTURE</span>
+        <h4>Design consistency is public infrastructure.</h4>
+        <p>USWDS is not decoration. It is recognizable navigation, shared form patterns, lower agency maintenance, higher public trust.</p>
+      </div>
+      <div class="seal">I03</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <span class="num"><b>04</b> · STRESS</span>
+        <h4>Design for the citizen under stress.</h4>
+        <p>Retirement, taxes, disability, immigration, disaster recovery. Assume tired, anxious, low-bandwidth, neurodivergent users.</p>
+      </div>
+      <div class="seal">S04</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <span class="num"><b>05</b> · SCREEN → ROOM</span>
+        <h4>Connect the screen to the room.</h4>
+        <p>Digital flows must map to paper forms, signage, front-desk scripts, waiting rooms, kiosks, staff dashboards, escalation.</p>
+      </div>
+      <div class="seal">R05</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <span class="num"><b>06</b> · AI POSTURE</span>
+        <h4>AI as acceleration. Not authority.</h4>
+        <p>AI inventories, migrates, drafts, tests. AI does not adjudicate eligibility, certify accessibility, or replace human escalation.</p>
+      </div>
+      <div class="seal">A06</div>
+    </div>
+    <div class="pillar" style="background:var(--canvas);box-shadow:inset 0 0 0 4px var(--red)">
+      <div>
+        <span class="num" style="color:var(--red)"><b>07</b> · NEW · LOCAL CONTEXT</span>
+        <h4 style="color:var(--red)">Standardize without erasing local context.</h4>
+        <p>Tribal nations, rural/offline users, multilingual communities, disability-specific service lines. If removal makes a population's service worse, the variation stays.</p>
+      </div>
+      <div class="seal">N07</div>
+    </div>
+  </section>
+
+  <!-- ===================== TENSIONS ===================== -->
+  <section class="tensions">
+    <div class="t-head">
+      <h2>FIVE&nbsp;<em>TENSIONS.</em></h2>
+      <span class="mono" style="color:rgba(245,245,243,0.8)">§ 03 · BLUEPRINT VOID · WATCH INDICATORS</span>
+    </div>
+    <div class="t">
+      <span class="label">01 · SPEED</span>
+      <div class="vs">vs.</div>
+      <span class="label">COMPLIANCE</span>
+      <h5>Rapid deployment can ship accessibility and legal risk.</h5>
+      <p>Public services cannot behave like consumer beta software.</p>
+      <small>▶ Watch · Launch date set before legal &amp; a11y review scheduled.</small>
+    </div>
+    <div class="t">
+      <span class="label">02 · BRAND</span>
+      <div class="vs">vs.</div>
+      <span class="label">DEMOCRACY</span>
+      <h5>Unified brand may build trust — or feel like a transaction.</h5>
+      <p>Civic neutrality is not optional. Citizenship is not a consumer event.</p>
+      <small>▶ Watch · Marketing-style language inside eligibility or enforcement flows.</small>
+    </div>
+    <div class="t">
+      <span class="label">03 · AI</span>
+      <div class="vs">vs.</div>
+      <span class="label">MEMORY</span>
+      <h5>External velocity. Agencies still own the artifact.</h5>
+      <p>Institutional capability must survive the launch.</p>
+      <small>▶ Watch · AI/vendor component with no agency-side maintainer named.</small>
+    </div>
+    <div class="t">
+      <span class="label">04 · AESTHETIC</span>
+      <div class="vs">vs.</div>
+      <span class="label">CONTEXT</span>
+      <h5>Centralization reduces chaos. It also flattens populations.</h5>
+      <p>Some service lines cannot be smoothed into one visual register.</p>
+      <small>▶ Watch · Population-specific needs deferred to "phase 2."</small>
+    </div>
+    <div class="t" style="border-right:none">
+      <span class="label">05 · TALENT</span>
+      <div class="vs">vs.</div>
+      <span class="label">INTEREST</span>
+      <h5>Capability and conflict travel together.</h5>
+      <p>TechForce-style pipelines bring both.</p>
+      <small>▶ Watch · Advisor on procurement is in line to win the contract.</small>
+    </div>
+  </section>
+
+  <!-- ===================== STAT BAR ===================== -->
+  <section class="stats">
+    <div class="s">
+      <div class="big red">27,000</div>
+      <small>Federal Domains &amp; Subdomains · Pre-NDS</small>
+    </div>
+    <div class="s">
+      <div class="big y">07·04·26</div>
+      <small>Mandate Deadline · Forcing Function</small>
+    </div>
+    <div class="s">
+      <div class="big g">10</div>
+      <small>Specialized Agents · Coordinated Swarm</small>
+    </div>
+    <div class="s">
+      <div class="big">14</div>
+      <small>Launch Gate Criteria · Non-Negotiable</small>
+    </div>
+  </section>
+
+  <!-- ===================== SWARM NETWORK ===================== -->
+  <section class="swarm">
+    <div class="copy">
+      <div class="col-label mono" style="margin-bottom:18px">
+        <span><span class="num" style="color:var(--red)">§ 04</span> · THE SWARM</span>
+        <span>p. 09</span>
+      </div>
+      <h2>The studio<br/>is a <em>network.</em></h2>
+      <p style="margin-top:14px">A Coordinator orchestrates nine specialists. They diagnose in parallel, redesign in sequence, and pass through a launch gate that names every dropped safeguard as a blocker — not a phase-two ticket.</p>
+      <div class="roster">
+        <div><span class="n">01</span><span><strong>Coordinator</strong> · CDO / Studio Lead</span></div>
+        <div><span class="n">02</span><span><strong>Civic Research</strong> · User burden</span></div>
+        <div><span class="n">03</span><span><strong>Service Blueprint</strong> · Journey map</span></div>
+        <div><span class="n">04</span><span><strong>Design System</strong> · USWDS gaps</span></div>
+        <div><span class="n">05</span><span><strong>Accessibility</strong> · § 508 · WCAG</span></div>
+        <div><span class="n">06</span><span><strong>Physical Env.</strong> · Office · Signage</span></div>
+        <div><span class="n">07</span><span><strong>Policy &amp; Risk</strong> · Governance</span></div>
+        <div><span class="n">08</span><span><strong>Implementation</strong> · Roadmap · Metrics</span></div>
+        <div><span class="n">09</span><span><strong>Communications</strong> · Public narrative</span></div>
+        <div style="border-color:var(--red)"><span class="n">10</span><span style="color:var(--red)"><strong>Brand Architect</strong> · NEW · Identity</span></div>
+      </div>
+    </div>
+    <div class="net">
+      <svg viewBox="0 0 600 540" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#111" stroke-width="0.4" opacity="0.15"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="540" fill="url(#grid)"/>
+
+        <!-- Coordinator center -->
+        <g id="links" stroke="#111" stroke-width="1" fill="none">
+          <!-- Will be drawn programmatically below -->
+        </g>
+        <script type="application/json" id="agents-data">
+        [
+          {"id":"01","label":"COORD","x":300,"y":270,"r":42,"role":"primary"},
+          {"id":"02","label":"RSCH","x":120,"y":120,"r":22,"role":"diag"},
+          {"id":"03","label":"BLUE","x":300,"y":80,"r":22,"role":"diag"},
+          {"id":"04","label":"DSYS","x":480,"y":120,"r":22,"role":"diag"},
+          {"id":"10","label":"BRND","x":540,"y":270,"r":24,"role":"new"},
+          {"id":"05","label":"A11Y","x":480,"y":420,"r":22,"role":"diag"},
+          {"id":"06","label":"PHYS","x":300,"y":470,"r":22,"role":"diag"},
+          {"id":"07","label":"RISK","x":120,"y":420,"r":22,"role":"diag"},
+          {"id":"08","label":"IMPL","x":60,"y":270,"r":22,"role":"seq"},
+          {"id":"09","label":"COMM","x":380,"y":380,"r":22,"role":"seq"}
+        ]
+        </script>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===================== METHODOLOGY STREAM ===================== -->
+  <section class="stream-section">
+    <div class="hd">
+      <h2>Methodology.</h2>
+      <span class="mono">§ 05 · STREAM · SEVEN PHASES</span>
+    </div>
+    <!-- Phase stream -->
+    <div class="stream" aria-hidden="true" id="phaseStream"></div>
+    <div class="phases">
+      <div class="ph"><span class="n">P.01</span><h4>Situation Scan</h4><p>Service purpose, user groups, traffic, failures, accessibility status, ownership.</p></div>
+      <div class="ph"><span class="n">P.02</span><h4>Friction Map</h4><p>Arrival → orientation → eligibility → form → upload → review → confirm → status → appeal.</p></div>
+      <div class="ph"><span class="n">P.03</span><h4>System Align.</h4><p>USWDS, § 508, IDEA Act, Plain Writing Act, WCAG 2.0 AA. Default to reuse.</p></div>
+      <div class="ph"><span class="n">P.04</span><h4>Service Redesign</h4><p>New journey, reduced steps, IA, components, content rewrite, a11y checklist.</p></div>
+      <div class="ph"><span class="n">P.05</span><h4>Phys-Digital</h4><p>Website language → signage. Form → paper form. Status → staff script.</p></div>
+      <div class="ph"><span class="n">P.06</span><h4>Risk Review</h4><p>A11y · privacy · security · legal · procurement · neutrality · exclusion · vendor.</p></div>
+      <div class="ph"><span class="n">P.07</span><h4>Decision Brief</h4><p>What ships now · what gets standardized · what stays local · success metrics.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== STIPPLE / BASELINE ===================== -->
+  <section class="stipple">
+    <div class="left">
+      <div class="col-label mono">
+        <span><span class="num" style="color:var(--red)">§ 06</span> · THE BASELINE</span>
+        <span>p. 14</span>
+      </div>
+      <p class="lede">27,000 federal interfaces — each a discrete point in a fragmented service landscape.</p>
+      <p>The pointillist field at right represents the pre-NDS federal interface surface. Each dot is a domain or subdomain operating with decentralized procurement, agency-specific design choices, and uneven USWDS adoption. The red points are the canonical service archetypes the skill always reasons about: SSA, IRS, USCIS, passport, VA, FEMA.</p>
+      <p class="mono" style="color:var(--red);margin-top:14px">// THE PROBLEM IS NOT VOLUME. IT IS COHERENCE.</p>
+    </div>
+    <div class="right">
+      <canvas id="stippleCanvas"></canvas>
+    </div>
+  </section>
+
+  <!-- ===================== CTA ===================== -->
+  <section class="cta">
+    <h3>Use the skill. Run the swarm. Ground every claim in the KB.</h3>
+    <a class="btn" href="./SKILL.md">SKILL.md →</a>
+    <a class="btn alt" href="./SWARM.md">SWARM.md →</a>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="colophon">
+      <div class="micro" style="margin-bottom:6px">COLOPHON</div>
+      <div>Joe Gebbia · NDS Skill Package · v1.1.0 · Draft</div>
+      <div>Files: SKILL.md · SWARM.md · NDS_KB.md · README.md</div>
+      <div class="mono" style="margin-top:8px;color:var(--red)">CANONICAL REFERENCE: NDS_KB.md</div>
+    </div>
+    <div>
+      <div class="micro" style="margin-bottom:6px">CITED FRAMEWORKS</div>
+      <div class="mono" style="line-height:1.7">
+        EO 14338 · § 508 · § 504 · 21ST CENTURY IDEA · PLAIN WRITING 2010 · WCAG 2.0 AA · USWDS
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+      <div class="micro">SPECIMEN ID</div>
+      <div class="barcode" id="footerBarcode"></div>
+      <div class="mono">NDS-GEBBIA · 1.1.0</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============ NETWORK ============ */
+(function(){
+  const svg = document.querySelector('.net svg');
+  if(!svg) return;
+  const data = JSON.parse(document.getElementById('agents-data').textContent);
+  const linksGroup = document.getElementById('links');
+  const coord = data.find(d=>d.role==='primary');
+
+  // links: coord to all others
+  data.filter(d=>d.role!=='primary').forEach(d=>{
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',coord.x); line.setAttribute('y1',coord.y);
+    line.setAttribute('x2',d.x); line.setAttribute('y2',d.y);
+    line.setAttribute('stroke','#111');
+    line.setAttribute('stroke-width', d.role==='new' ? 1.8 : 0.8);
+    if(d.role==='new'){ line.setAttribute('stroke','#D23B30'); line.setAttribute('stroke-dasharray','4 3'); }
+    linksGroup.appendChild(line);
+  });
+
+  // diag-to-diag light ring
+  const diag = data.filter(d=>d.role==='diag' || d.role==='new');
+  for(let i=0;i<diag.length;i++){
+    const a = diag[i], b = diag[(i+1)%diag.length];
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',a.x); line.setAttribute('y1',a.y);
+    line.setAttribute('x2',b.x); line.setAttribute('y2',b.y);
+    line.setAttribute('stroke','#111'); line.setAttribute('stroke-width','0.5');
+    line.setAttribute('opacity','0.35');
+    linksGroup.appendChild(line);
+  }
+
+  // nodes
+  data.forEach(d=>{
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','node');
+    g.setAttribute('transform',`translate(${d.x},${d.y})`);
+
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('r', d.r);
+    c.setAttribute('fill', d.role==='primary' ? '#111' : d.role==='new' ? '#D23B30' : '#F5F5F3');
+    c.setAttribute('stroke', d.role==='primary' ? '#D23B30' : '#111');
+    c.setAttribute('stroke-width', d.role==='primary' ? 2.5 : 1.5);
+    g.appendChild(c);
+
+    // id number above
+    const id = document.createElementNS('http://www.w3.org/2000/svg','text');
+    id.setAttribute('y', d.role==='primary' ? -2 : -2);
+    id.setAttribute('text-anchor','middle');
+    id.setAttribute('font-family','Space Mono, monospace');
+    id.setAttribute('font-size', d.role==='primary' ? 10 : 9);
+    id.setAttribute('fill', d.role==='primary' ? '#F5F5F3' : (d.role==='new' ? '#F5F5F3' : '#111'));
+    id.textContent = d.id;
+    g.appendChild(id);
+
+    // label below center
+    const lab = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lab.setAttribute('y', d.role==='primary' ? 12 : 10);
+    lab.setAttribute('text-anchor','middle');
+    lab.setAttribute('font-family','Space Mono, monospace');
+    lab.setAttribute('font-size', d.role==='primary' ? 10 : 8);
+    lab.setAttribute('font-weight', '700');
+    lab.setAttribute('fill', d.role==='primary' ? '#F5F5F3' : (d.role==='new' ? '#F5F5F3' : '#111'));
+    lab.textContent = d.label;
+    g.appendChild(lab);
+
+    svg.appendChild(g);
+  });
+
+  // crosshair on coord
+  const ch1 = document.createElementNS('http://www.w3.org/2000/svg','line');
+  ch1.setAttribute('x1',0);ch1.setAttribute('x2',600);ch1.setAttribute('y1',coord.y);ch1.setAttribute('y2',coord.y);
+  ch1.setAttribute('stroke','#D23B30');ch1.setAttribute('stroke-width','0.4');ch1.setAttribute('stroke-dasharray','2 4');
+  const ch2 = document.createElementNS('http://www.w3.org/2000/svg','line');
+  ch2.setAttribute('y1',0);ch2.setAttribute('y2',540);ch2.setAttribute('x1',coord.x);ch2.setAttribute('x2',coord.x);
+  ch2.setAttribute('stroke','#D23B30');ch2.setAttribute('stroke-width','0.4');ch2.setAttribute('stroke-dasharray','2 4');
+  svg.insertBefore(ch1, svg.firstChild);
+  svg.insertBefore(ch2, svg.firstChild);
+})();
+
+/* ============ PHASE STREAM ============ */
+(function(){
+  const el = document.getElementById('phaseStream');
+  if(!el) return;
+  const palette = ['ink-b','red-b','y-b','g-b','v-b','x-b','ink-b','ink-b','y-b','red-b','x-b','ink-b','g-b','ink-b','red-b','y-b','x-b','v-b','ink-b','ink-b','red-b','y-b','g-b','ink-b','x-b','red-b','ink-b','y-b'];
+  el.innerHTML = palette.map(c=>`<span class="${c}"></span>`).join('');
+})();
+
+/* ============ FOOTER BARCODE ============ */
+(function(){
+  const el = document.getElementById('footerBarcode');
+  if(!el) return;
+  el.innerHTML = Array.from({length:64}).map(()=>'<i></i>').join('');
+})();
+
+/* ============ STIPPLE / DOMAIN FIELD ============ */
+(function(){
+  const c = document.getElementById('stippleCanvas');
+  if(!c) return;
+  function draw(){
+    const dpr = window.devicePixelRatio||1;
+    const w = c.clientWidth, h = c.clientHeight;
+    c.width = w*dpr; c.height = h*dpr;
+    const ctx = c.getContext('2d');
+    ctx.scale(dpr,dpr);
+    ctx.fillStyle = '#F5F5F3'; ctx.fillRect(0,0,w,h);
+
+    // dense stipple
+    const total = 2700; // representational, not literal 27k
+    for(let i=0;i<total;i++){
+      const x = Math.random()*w;
+      const y = Math.random()*h;
+      const r = Math.random()*1.4 + 0.3;
+      ctx.beginPath();
+      ctx.fillStyle = '#111';
+      ctx.globalAlpha = 0.45 + Math.random()*0.5;
+      ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // canonical archetype dots (red, larger)
+    const archetypes = [
+      {x:w*0.18,y:h*0.30,label:'SSA'},
+      {x:w*0.38,y:h*0.55,label:'IRS'},
+      {x:w*0.58,y:h*0.25,label:'USCIS'},
+      {x:w*0.72,y:h*0.62,label:'PASSPORT'},
+      {x:w*0.32,y:h*0.78,label:'VA'},
+      {x:w*0.84,y:h*0.38,label:'FEMA'},
+    ];
+    archetypes.forEach(a=>{
+      // halo
+      ctx.beginPath();
+      ctx.strokeStyle = '#D23B30'; ctx.lineWidth = 1.2;
+      ctx.arc(a.x,a.y,11,0,Math.PI*2); ctx.stroke();
+      // dot
+      ctx.beginPath();
+      ctx.fillStyle = '#D23B30';
+      ctx.arc(a.x,a.y,4.5,0,Math.PI*2); ctx.fill();
+      // label
+      ctx.fillStyle = '#111';
+      ctx.font = '600 9px "Space Mono", monospace';
+      ctx.fillText(a.label, a.x+14, a.y+3);
+    });
+
+    // baseline grid overlay
+    ctx.strokeStyle = 'rgba(17,17,17,0.12)';
+    ctx.lineWidth = 0.5;
+    for(let y=24;y<h;y+=24){
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+    }
+  }
+  draw();
+  window.addEventListener('resize',()=>{ draw(); });
+})();
+</script>
+</body>
+</html>
