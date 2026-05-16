@@ -41,6 +41,7 @@ Each skill keeps its own identity, doctrine, KB (if any), schema, and version. T
 | [IRS Payment Portal](./joe_gebbia_nds_skill_package/examples/irs-payment-portal-assessment.md) | CDO (SKILL.md) | Single-skill run · Speed vs. Compliance |
 | [FEMA Disaster Recovery](./joe_gebbia_nds_skill_package/examples/fema-disaster-recovery-swarm.md) | CDO (SWARM.md) | 10-agent swarm · Aesthetic Authority vs. Local Context · 3 blocking red flags |
 | [Passport Modernization](./joe_gebbia_nds_skill_package/examples/cross-skill-passport-modernization.md) | **All three** | Full suite chain · CDO → AVS → Spatial-Motion · named handoffs |
+| [Document Redesigns →](./joe_gebbia_nds_skill_package/examples/document-redesigns/) | CDO | Redesigns of real federal documents · ONI Russian Navy 2015 (hydrographic aesthetic) · ODNI ATA 2025 (Wunderkammer aesthetic, **first Phase 4 service redesign**) |
 
 ## Core doctrine (CDO skill · 7 pillars)
 

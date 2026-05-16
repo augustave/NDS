@@ -34,6 +34,7 @@
 - `examples/irs-payment-portal-assessment.md` — CDO `SKILL.md` run · Speed vs. Compliance · 12 success metrics
 - `examples/fema-disaster-recovery-swarm.md` — CDO `SWARM.md` run · Aesthetic Authority vs. Local Context · 3 blocking red flags
 - `examples/cross-skill-passport-modernization.md` — full suite chain · CDO → AVS → Spatial-Motion · all three handoffs named
+- `examples/document-redesigns/` — worked redesigns of real federal documents with reasoning traces. Two specimens at time of writing: the ONI Russian Navy 2015 report (hydrographic-intelligence aesthetic, Phase 3) and the ODNI ATA 2025 report (Wunderkammer aesthetic, **Phase 4 service redesign** — the first specimen to exercise Phase 4)
 
 ## Intended use
 
