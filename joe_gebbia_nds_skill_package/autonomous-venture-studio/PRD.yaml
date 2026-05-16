@@ -1,0 +1,207 @@
+version: "1.1"
+product_name: "Autonomous Venture Studio"
+document_type: "PRD"
+owner: "venture-studio-ops"
+status: active
+north_star: "Turn ambiguous market signals into a validated venture concept with aligned product, brand, and narrative — fast enough for a solo founder to execute."
+
+operating_thesis: |
+  Most 0-to-1 ventures fail because product, brand, and narrative evolve in isolation, creating incoherence at scale.
+  This skill runs a tight 3-node loop where product architecture, aesthetic systems, and executive narrative are designed
+  together, with validation gates at each step. Result: founders ship coherent ventures, not fragmented products.
+
+lifecycle:
+  - orient
+  - design
+  - validate
+  - launch
+
+ranked_goals:
+  1: "Validate market requirement (pain, users, minimum utility) before serious build work begins."
+  2: "Structure the product system (entities, states, permissions, workflows) before UI polish."
+  3: "Define the brand operating system (visual, verbal, motion, campaign) as a coherent force, not cosmetic skin."
+  4: "Align executive narrative, product capability, and brand positioning into one coherent story."
+  5: "Impose governance over autonomous workflows — risk tiering, evidence vault, decision audit trail."
+  6: "Enable solo founders to compress the studio cycle from 6 months to 4–6 weeks for frontier-tech ventures."
+
+anti_goals:
+  - "Do not validate ideas with generic design thinking workshops. Use simulated interviews and pain documentation."
+  - "Do not layer AI on top of broken workflows; redesign the workflow first."
+  - "Do not ship generic SaaS templates. Reject corporate defaults in brand systems."
+  - "Do not separate product from narrative. Every technical choice must map to a business claim."
+  - "Do not treat governance as compliance tax. Make it a product feature."
+  - "Do not force founders through a process. Adapt the loop to venture stage (pre-seed, seed, Series A)."
+
+problem_statement:
+  - "Founders designing ventures face three uncoordinated disciplines: product architecture, brand systems, and go-to-market narrative."
+  - "Most tooling handles each discipline in isolation, creating delays and strategic incoherence."
+  - "Validation happens late, after heavy investment in direction that may not reflect actual market pain or founder capability."
+  - "Autonomous/AI product concepts lack governance frameworks, creating risk and compliance blind spots."
+  - "Solo founders lack the bandwidth to compress what typically takes a studio team 6+ months into weeks."
+
+users:
+  primary:
+    - "Solo founders or small teams in defense tech, frontier AI, autonomous systems, and deep-tech ventures."
+    - "Founder has ambiguous market signal, loose product intuition, and needs to validate before raising or shipping."
+  secondary:
+    - "Product leads at early-stage startups validating new product lines."
+    - "Internal innovation teams at tier-1 companies designing autonomous workflows."
+
+success_metrics:
+  primary:
+    - "Founders ship a validated market requirement, product architecture, and brand system document within 4–6 weeks."
+    - "The venture concept aligns product truth to brand positioning (no fictional capabilities in campaign)."
+    - "All major claims in executive narrative map to product mechanics or governance controls."
+  secondary:
+    - "Founder confidence increases 3x through artifact clarity and validation evidence."
+    - "Risk register completeness: ≥80% of major risks identified and tiered before launch."
+    - "Time-to-prototype: ≤2 weeks to interactive proof-of-concept (core loop only)."
+
+functional_requirements:
+  - id: "FR-01"
+    name: "Market requirement validation"
+    requirement: "Conduct simulated user interviews, pain documentation, and utility mapping to validate product-market fit signals before architecting."
+
+  - id: "FR-02"
+    name: "Domain-driven product architecture"
+    requirement: "Define entity models, service boundaries, workflow states, and permissions explicitly before UI design. Run ER before screens."
+
+  - id: "FR-03"
+    name: "Brand operating system design"
+    requirement: "Construct visual identity tokens, verbal system, motion language, and campaign architecture as one coherent system."
+
+  - id: "FR-04"
+    name: "Executive narrative synthesis"
+    requirement: "Translate product and brand outputs into a clear, risk-tiered launch decision memo that maps claims to capability."
+
+  - id: "FR-05"
+    name: "Governance evidence vault"
+    requirement: "Maintain audit trail of decisions, risk tiers, approvals, and rollback paths for autonomous workflows."
+
+  - id: "FR-06"
+    name: "Crosscutting verification gates"
+    requirement: "Enforce mandatory gates at each phase: market truth, systems truth, aesthetic coherence, narrative alignment, launch readiness."
+
+non_functional_requirements:
+  - id: "NFR-01"
+    name: "Execution speed"
+    requirement: "Compress full cycle from 6 months to 4–6 weeks for well-scoped ventures (no scope creep)."
+
+  - id: "NFR-02"
+    name: "Scalability to venture stage"
+    requirement: "Loop adapts to founder maturity and funding stage: pre-seed (bare minimum), seed (full rigor), Series A (governance depth)."
+
+  - id: "NFR-03"
+    name: "Frontier-tech fitness"
+    requirement: "Governance and narrative model suited to autonomous/AI/defense product categories, not generic SaaS."
+
+  - id: "NFR-04"
+    name: "Solo founder feasibility"
+    requirement: "All workflows designed for one founder or small team; no dependency on external studios or consultants."
+
+system_modules:
+  "Strategic Narrative Operator":
+    description: "Market requirement framing, risk tiering, launch decision support, governance operationalization."
+    owns:
+      - "market_requirement_output"
+      - "risk_register"
+      - "launch_decision_memo"
+      - "governance_evidence_vault"
+
+  "Product Foundry Architect":
+    description: "Domain modeling, entity schema, workflow state definition, prototype architecture."
+    owns:
+      - "domain_model"
+      - "entity_relationship_schema"
+      - "service_boundary_map"
+      - "workflow_state_spec"
+      - "interactive_prototype"
+
+  "Brand Experience Sovereign":
+    description: "Visual identity tokens, verbal system, motion language, campaign architecture, brand operating system."
+    owns:
+      - "brand_system_tokens"
+      - "visual_identity"
+      - "verbal_identity_system"
+      - "motion_language"
+      - "campaign_architecture"
+
+artifact_sequence:
+  - step: 1
+    primary_artifact: "Market Requirement Document"
+    owner: "Strategic Narrative Operator"
+    gate: "market_truth_gate"
+    description: "Validated pain, target users, minimum useful outcome, constraints, success criteria."
+
+  - step: 2
+    primary_artifact: "Product Architecture (Domain Model + ER Schema + State Machine)"
+    owner: "Product Foundry Architect"
+    gate: "systems_truth_gate"
+    description: "Entities, permissions, workflows, service boundaries, scalability assumptions."
+
+  - step: 3
+    primary_artifact: "Brand Operating System"
+    owner: "Brand Experience Sovereign"
+    gate: "aesthetic_coherence_gate"
+    description: "Visual tokens, type system, motion rules, 3D language, campaign phases."
+
+  - step: 4
+    primary_artifact: "Executive Launch Decision Memo"
+    owner: "Strategic Narrative Operator"
+    gate: "launch_readiness_gate"
+    description: "Final alignment: product truth + brand implication + narrative claim + risk tier + go/no-go."
+
+milestones:
+  M0: "Skill onboarding: founder brief intake, loop orientation, governance model intro."
+  M1: "Market requirement validation complete: pain documented, users validated, utility scoped."
+  M2: "Product architecture complete: domain model, ER schema, workflow state machine, core loop prototype."
+  M3: "Brand operating system complete: visual identity, verbal system, motion language, campaign roadmap."
+  M4: "Executive launch decision: narrative memo, risk register, governance evidence vault, go/no-go recommendation."
+
+risks:
+  - id: "R-01"
+    title: "Scope creep from founder expectations"
+    severity: "high"
+    mitigation: "Enforce artifact exit gates. If market requirement is not validated, do not proceed to Phase II. Use venture-stage filtering (pre-seed vs seed vs Series A) to scope effort."
+
+  - id: "R-02"
+    title: "Product truth diverges from brand positioning"
+    severity: "high"
+    mitigation: "Run mandatory narrative-visual alignment gate before launch. No fictional capabilities in campaign. All marketing claims trace to product mechanics."
+
+  - id: "R-03"
+    title: "Governance becomes compliance theater, not embedded control"
+    severity: "medium"
+    mitigation: "Design governance controls into product workflows (e.g., audit logs, rollback paths, approval queues). Make evidence vault a living artifact, not a post-hoc dump."
+
+  - id: "R-04"
+    title: "Solo founder cannot execute on output (too detailed or procedural)"
+    severity: "medium"
+    mitigation: "Provide executable templates, component libraries, and phase gates. Prioritize core loop over completeness. Run founder capability check before committing to full cycle."
+
+  - id: "R-05"
+    title: "Loop stalls on architectural rework during Phase II or III"
+    severity: "medium"
+    mitigation: "Use tight feedback loops within each phase. Run lightweight iteration gates (ER validation, prototype fidelity check) before exiting each phase."
+
+acceptance_criteria:
+  - "Market requirement doc includes validated pain evidence, target user segment, minimum useful outcome, and success metrics."
+  - "Product architecture includes entity model, ER diagram, service boundaries, state machine, and matching prototype data schema."
+  - "Brand operating system includes visual identity tokens (color, type, spacing), verbal identity rules, motion language, and campaign phase architecture."
+  - "Executive launch memo maps all major narrative claims to product mechanics or risk controls."
+  - "Risk register includes ≥5 identified risks with severity tiers and mitigations."
+  - "All phase gates passed: market truth → systems truth → aesthetic coherence → narrative alignment → launch readiness."
+
+deliverables:
+  - "Validated Market Requirement (markdown + spreadsheet of pain/utility validation)"
+  - "Product Architecture Documentation (domain model, ER schema, state machine, service map)"
+  - "Interactive Prototype (core loop, data schema validated, representative of full system architecture)"
+  - "Brand Operating System (visual tokens, typography rules, motion specs, 3D asset list, campaign phases)"
+  - "Executive Launch Decision Memo (risk-tiered, governance evidence vault linked, go/no-go)"
+  - "Governance Evidence Vault (decision logs, approvals, rollback paths, audit trail)"
+
+what_i_should_remember:
+  - "Validation beats polish. Do not spend engineering effort on directions that haven't proven market pain."
+  - "System first, screens second. ER diagram before mockups. State machine before interaction flows."
+  - "Brand is not cosmetic. It is the operating system that governs how product, campaign, motion, and narrative behave together."
+  - "Every technical claim must tie to a business claim. Governance is embedded in product, not layered on top. Truth over narrative."

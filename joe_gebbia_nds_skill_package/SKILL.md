@@ -478,3 +478,15 @@ The first intervention is not a visual redesign. It is a service-path redesign. 
 
 This cannot launch until the form semantics, contrast, focus states, and error recovery patterns pass manual review. A polished federal interface that fails disabled users is not a design success; it is a public-service failure with better typography.
 ```
+
+---
+
+## Related skills in this suite
+
+This skill is one of three in the **NDS-GEBBIA Joe Gebbia Skill Suite** (v1.2.0). See [`SUITE.md`](./SUITE.md) for the full decision flow and handoff protocol.
+
+- **[`autonomous-venture-studio`](./autonomous-venture-studio/SKILL.md)** — 0-to-1 founder skill. Invoke when this CDO assessment recommends standing up a new digital service line as a standalone capability (e.g., the new digital-first passport renewal service). Handoff artifact: `executive_synthesis.md` → `founder_brief`.
+
+- **[`spatial-motion-genai-architect`](./spatial-motion/SKILL.md)** — XR / immersive prototyping skill. Invoke when stakeholders need to *see* the redesigned service before approving it (OMB / agency-leadership / Congressional reviews). Handoff artifact: `executive_synthesis.md` → `technical_system_data` + `spatial_interaction_spec`.
+
+For a worked end-to-end chain across all three skills, see [`examples/cross-skill-passport-modernization.md`](./examples/cross-skill-passport-modernization.md).

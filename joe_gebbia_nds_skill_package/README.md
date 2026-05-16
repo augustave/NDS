@@ -1,49 +1,76 @@
-# Joe Gebbia NDS Skill Package
+# Joe Gebbia Skill Suite
 
-**Version 1.1.0** — This package turns the America by Design / National Design Studio research base into operational agent documentation.
+**Suite version 1.2.0** — This package turns three facets of Joe Gebbia's public roles into operational agent documentation: civic Chief Design Officer (NDS), founder of an autonomous venture studio, and designer-technologist in spatial-motion / XR.
+
+## Skill index
+
+| Skill | Internal version | Role | Swarm size | Output |
+|---|---|---|---|---|
+| [`joe-gebbia-nds-chief-design-officer`](./SKILL.md) | 1.1.0 | Civic CDO | 10 agents | Executive design assessment / swarm modernization report |
+| [`autonomous-venture-studio`](./autonomous-venture-studio/SKILL.md) | 1.1.0 | 0-to-1 founder | 3 nodes | Market requirement → product architecture → brand OS → launch decision memo |
+| [`spatial-motion-genai-architect`](./spatial-motion/SKILL.md) | 1.1.0 | Designer-technologist | 4 cells | Immersive demo package (concept reel, TouchDesigner network, Unity sandbox) |
+
+**Suite coordinator:** [`SUITE.md`](./SUITE.md) — when to invoke which skill, multi-skill chains, handoff protocol.
 
 ## Files
 
-• `SKILL.md` — single-agent role skill for acting as a Joe Gebbia-style Chief Design Officer inside the National Design Studio mandate. Includes the seven-pillar core doctrine and seven-phase methodology.
+### Suite-level
+- `README.md` — this file
+- `SUITE.md` — decision flow + handoff protocol + cross-skill chains
 
-• `SWARM.md` — multi-agent orchestration skill (10 agents) for splitting the NDS modernization problem into coordinated research, design-system, brand, accessibility, physical-service, policy-risk, implementation, and communications workstreams.
+### CDO skill (lead)
+- `SKILL.md` — single-agent CDO skill (7 pillars, 7 phases)
+- `SWARM.md` — 10-agent orchestration with 14-criterion launch gate
+- `NDS_KB.md` — canonical knowledge base (civic-specific; not shared across the suite)
+- `hello-nds.html` — editorial-brutalist promo specimen
 
-• `NDS_KB.md` — canonical knowledge base. Treated as ground truth by both `SKILL.md` and `SWARM.md`. Includes cited legal frameworks, strategic tensions with watch indicators, measurement baselines, canonical service archetypes, AI use boundaries, and a glossary.
+### AVS skill
+- `autonomous-venture-studio/` — `SKILL.md` · `SWARM.md` · `PRD.yaml` · `common-schema.yaml` · `agents/` · `references/` · `scripts/`
 
-• `examples/` — worked runs of the skill against canonical service archetypes from `NDS_KB.md`. Read these first if you want to see what the skill actually produces before deciding how to use it.
+### Spatial-Motion skill
+- `spatial-motion/` — `SKILL.md` · `SWARM.md` · `PRD.yaml` · `common-schema.yaml`
 
-  - `examples/irs-payment-portal-assessment.md` — full `SKILL.md` run against the IRS individual payment portal. Dominant strategic tension: Speed vs. Compliance. Demonstrates the single-agent CDO methodology end-to-end: friction map, service doctrine, USWDS-aligned digital redesign, Taxpayer Assistance Center translation, accessibility review against §508 / §504 / 21st Century IDEA Act / Plain Writing Act, sequenced roadmap, 12 success metrics.
+### Worked examples
+- `examples/irs-payment-portal-assessment.md` — CDO `SKILL.md` run · Speed vs. Compliance · 12 success metrics
+- `examples/fema-disaster-recovery-swarm.md` — CDO `SWARM.md` run · Aesthetic Authority vs. Local Context · 3 blocking red flags
+- `examples/cross-skill-passport-modernization.md` — full suite chain · CDO → AVS → Spatial-Motion · all three handoffs named
 
-  - `examples/fema-disaster-recovery-swarm.md` — full `SWARM.md` run against the FEMA Individual Assistance flow. Dominant strategic tension: Aesthetic Authority vs. Local Context. Exercises all ten agents (including the new Brand Architect Agent) with structured handoffs, ends with three currently-blocking red flags traced to Phase 1–2 fixes. The hardest archetype on purpose: low-bandwidth, displaced users, missing documents, language access, tribal sovereignty, and the Brand-vs-Democracy tension all live here.
+## Intended use
 
-• `hello-nds.html` — editorial-brutalist single-page promo / specimen for the package.
+Use this suite when you want an agent to reason from one of three public Gebbia roles:
 
-## Intended Use
+- **CDO skill** — transforming government websites, services, visual systems, and physical service environments under EO 14338 (signed Aug 21, 2025; deadline July 4, 2026)
+- **Autonomous Venture Studio** — turning ambiguous 0-to-1 venture briefs into validated venture concepts in 4–6 weeks
+- **Spatial-Motion** — translating complex technical systems into immersive XR / motion prototypes in 5–7 days
 
-Use this package when you want an agent to reason from the position of the Chief Design Officer responsible for the National Design Studio: transforming government websites, services, visual systems, and physical service environments under the America by Design initiative (Executive Order 14338, signed August 21, 2025; deadline July 4, 2026).
+Most tasks need only one skill. For tasks spanning public + private + R&D boundaries, see [`SUITE.md`](./SUITE.md) for the canonical chains.
 
-## What's New in 1.1.0
+## What's new in 1.2.0
 
-• **Mandate Frame** added to both `SKILL.md` and `SWARM.md` — cites EO 14338, the July 4, 2026 deadline, ~27,000 federal domains, USWDS as the canonical design system, and the Chief Brand Architect peer role.
+- **Two new peer skills** added: `autonomous-venture-studio` (founder / 0-to-1) and `spatial-motion-genai-architect` (designer-technologist / XR)
+- **`SUITE.md`** added at package root — decision flow, multi-skill chains, handoff protocol
+- **Cross-skill worked example** added: `examples/cross-skill-passport-modernization.md` — full CDO → AVS → Spatial-Motion chain
+- **Top-level and package-level READMEs** repositioned as suite documents
+- **"Related skills in this suite"** footer added to each `SKILL.md`
+- **No breaking changes** to the v1.1.0 CDO skill, SWARM, KB, worked examples, or `hello-nds.html`
 
-• **Strategic Tensions** named explicitly (Speed vs. Compliance, Brand vs. Democracy, AI vs. Institutional Memory, Aesthetic Authority vs. Local Context, Private-Sector Talent vs. Conflict of Interest), with watch indicators in the KB.
+The internal versions of the three skills remain at v1.1.0. The suite version reflects the bundling.
 
-• **7th doctrine pillar** added to `SKILL.md`: "Standardize without erasing local context."
+## What's new in 1.1.0 (CDO skill only — prior release)
 
-• **Phase 3 (Design-System Alignment)** in `SKILL.md` now names USWDS, Section 508, Section 504, the 21st Century IDEA Act, the Plain Writing Act of 2010, and WCAG 2.0 AA explicitly.
+- **Mandate Frame** added to both `SKILL.md` and `SWARM.md` — cites EO 14338, the July 4, 2026 deadline, ~27,000 federal domains, USWDS as the canonical design system, and the Chief Brand Architect peer role.
+- **Strategic Tensions** named explicitly (Speed vs. Compliance, Brand vs. Democracy, AI vs. Institutional Memory, Aesthetic Authority vs. Local Context, Private-Sector Talent vs. Conflict of Interest), with watch indicators in the KB.
+- **7th doctrine pillar** added to `SKILL.md`: "Standardize without erasing local context."
+- **Phase 3 (Design-System Alignment)** in `SKILL.md` now names USWDS, Section 508, Section 504, the 21st Century IDEA Act, the Plain Writing Act of 2010, and WCAG 2.0 AA explicitly.
+- **Phase 5 (Physical-Digital Translation)** anchors examples in canonical agencies: SSA, IRS, USCIS, passport agencies, VA, FEMA.
+- **Brand Architect Agent** added to the swarm as Agent #10.
+- **Implementation Agent** now defines explicit measurement baselines.
+- **Coordinator Agent** must name the dominant strategic tension and clear a red-flags checklist before the Launch Gate.
+- **Launch Gate** expanded to cover all 10 KB Evaluation Criteria plus tension-naming and red-flag clearance.
+- **NDS_KB.md** expanded with: Cited Legal Frameworks, watch indicators per tension, Measurement Baselines, Canonical Service Archetypes, AI Use Boundaries, and a Glossary.
 
-• **Phase 5 (Physical-Digital Translation)** anchors examples in canonical agencies: SSA, IRS, USCIS, passport agencies, VA, FEMA.
+## Important guardrail
 
-• **Brand Architect Agent** added to the swarm as Agent #10.
+This suite does not attempt to reproduce private thoughts, personal beliefs, or undisclosed strategy from Joe Gebbia. It models **public roles**, public mandates, and public design postures based on available research.
 
-• **Implementation Agent** now defines explicit measurement baselines.
-
-• **Coordinator Agent** must name the dominant strategic tension and clear a red-flags checklist before the Launch Gate.
-
-• **Launch Gate** expanded to cover all 10 KB Evaluation Criteria plus tension-naming and red-flag clearance.
-
-• **NDS_KB.md** expanded with: Cited Legal Frameworks, watch indicators per tension, Measurement Baselines, Canonical Service Archetypes, AI Use Boundaries, and a Glossary.
-
-## Important Guardrail
-
-This package does not attempt to reproduce private thoughts, personal beliefs, or undisclosed strategy from Joe Gebbia. It models a public role, public mandate, and public design posture based on available research.
+Each worked example is illustrative — not an official deliverable, not legal advice, not a procurement recommendation.

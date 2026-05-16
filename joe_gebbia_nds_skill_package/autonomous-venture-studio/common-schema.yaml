@@ -1,0 +1,357 @@
+version: "1.1"
+namespace: "venture_studio"
+summary: |
+  Shared schema and vocabulary for the Autonomous Venture Studio skill.
+  Defines artifact lifecycle, confidence levels, risk tiers, and common data structures
+  used across Strategic Narrative Operator, Product Foundry Architect, and Brand Experience Sovereign.
+
+shared_rules:
+  lifecycle:
+    - "brief: Founder intake, problem framing, scope negotiation."
+    - "orient: Understand the domain, existing constraints, team capability, venture stage."
+    - "design: Run the three-node loop (market validation → product architecture → brand system → narrative alignment)."
+    - "validate: Test prototype against users, validate risk tiering, confirm execution feasibility."
+    - "launch: Execute go-to-market, maintain governance evidence, monitor post-launch metrics."
+
+  artifact_status:
+    - "draft: Initial output, not reviewed or validated."
+    - "reviewed: Peer-reviewed by at least one other node, flagged issues noted."
+    - "gated: Passed mandatory verification gate, owner certified readiness."
+    - "locked: Approved for production use or milestone handoff, change control active."
+    - "archived: Superseded, kept for audit or historical reference."
+
+  source_quality:
+    - "primary: Direct user feedback, validated pain documentation, prototype testing data."
+    - "secondary: Market research, competitive analysis, domain expertise, historical similar ventures."
+    - "tertiary: Speculation, analogies from other domains, assumptions documented as hypotheses."
+    - "untested: Founder intuition, not yet validated. Mark as hypothesis for testing."
+
+  confidence_levels:
+    - "high: Multiple independent validation sources, ≥3 user confirmations, evidence repeatable."
+    - "medium: Single strong source or mixed sources, 1–2 user confirmations, some assumptions."
+    - "low: Assumptions only, no direct evidence, contradictory signals present."
+    - "unvalidated: Not yet tested, marked as hypothesis pending research."
+
+  evidence_rule:
+    "Every major claim (pain, capability, market size, user segment) must be backed by source_quality and confidence_level.
+     Claims without evidence default to 'untested hypothesis'. Narrative cannot assert claims above the confidence level
+     of the evidence backing them."
+
+  id_rule:
+    "All major artifacts (risks, requirements, entities, user segments) use kebab-case IDs with source prefix.
+     Example: MKT-01 (market requirement 1), PROD-03 (product entity 3), RISK-05 (risk 5), USER-SEGMENT-02."
+
+  revision_rule:
+    "Major artifacts maintain revision history inline (YAML comment or linked changelog). Breaking changes trigger
+     a gate review and re-certification. Minor corrections (typos, clarification) are logged but do not require re-gating."
+
+schemas:
+  "Market Requirement":
+    type: "object"
+    required: ["id", "pain_statement", "target_users", "minimum_utility", "success_criteria", "evidence_source"]
+    properties:
+      id:
+        type: "string"
+        description: "Kebab-case ID (e.g., MKT-01). Globally unique within venture."
+      pain_statement:
+        type: "string"
+        description: "User-facing pain. Avoid jargon. Example: 'Defense contractors spend 40% of integration time validating sensor calibration manually.'"
+      target_users:
+        type: "array"
+        items:
+          type: "object"
+          required: ["segment_id", "role", "frequency", "willingness_to_pay"]
+          properties:
+            segment_id:
+              type: "string"
+              description: "USER-SEGMENT-01, etc."
+            role:
+              type: "string"
+              description: "Job title or function."
+            frequency:
+              type: "string"
+              description: "How often they experience the pain (daily, weekly, quarterly, etc.)."
+            willingness_to_pay:
+              type: "string"
+              description: "Low/Medium/High, or $ range."
+      minimum_utility:
+        type: "string"
+        description: "The smallest, most focused outcome that solves the pain. Avoid feature sprawl."
+      constraints:
+        type: "array"
+        items:
+          type: "string"
+        description: "Regulatory, technical, organizational blockers."
+      success_criteria:
+        type: "array"
+        items:
+          type: "string"
+        description: "How we measure if the venture succeeds (e.g., 'User completes core loop in <5 min with 0 errors')."
+      evidence_source:
+        type: "object"
+        required: ["source_quality", "confidence_level"]
+        properties:
+          source_quality:
+            type: "string"
+            enum: ["primary", "secondary", "tertiary", "untested"]
+          confidence_level:
+            type: "string"
+            enum: ["high", "medium", "low", "unvalidated"]
+          validation_count:
+            type: "integer"
+            description: "Number of independent user confirmations."
+          notes:
+            type: "string"
+
+  "Product Entity":
+    type: "object"
+    required: ["entity_id", "name", "attributes", "permissions", "lifecycle"]
+    properties:
+      entity_id:
+        type: "string"
+        description: "PROD-01, PROD-02, etc."
+      name:
+        type: "string"
+        description: "Entity name (e.g., 'Sensor Calibration Task', 'Audit Log Entry')."
+      attributes:
+        type: "array"
+        items:
+          type: "object"
+          required: ["attr_name", "type", "required"]
+          properties:
+            attr_name:
+              type: "string"
+            type:
+              type: "string"
+              enum: ["string", "number", "date", "boolean", "uuid", "enum", "nested"]
+            required:
+              type: "boolean"
+            description:
+              type: "string"
+      permissions:
+        type: "object"
+        required: ["create", "read", "update", "delete"]
+        properties:
+          create:
+            type: "string"
+            description: "Who can create (e.g., 'admin, task_owner')."
+          read:
+            type: "string"
+            description: "Who can read."
+          update:
+            type: "string"
+            description: "Who can update."
+          delete:
+            type: "string"
+            description: "Who can delete."
+      lifecycle:
+        type: "array"
+        items:
+          type: "string"
+        description: "State transitions (e.g., [created, in_progress, completed, archived])."
+
+  "Workflow State":
+    type: "object"
+    required: ["state_id", "name", "entry_condition", "exit_condition", "actions", "data_requirements"]
+    properties:
+      state_id:
+        type: "string"
+        description: "WF-01, WF-02, etc."
+      name:
+        type: "string"
+      entry_condition:
+        type: "string"
+        description: "What triggers entry to this state."
+      exit_condition:
+        type: "string"
+        description: "What allows progression to next state."
+      actions:
+        type: "array"
+        items:
+          type: "string"
+        description: "What the system (or user) does in this state."
+      data_requirements:
+        type: "array"
+        items:
+          type: "string"
+        description: "Data that must be present or collected."
+      timeout:
+        type: "string"
+        description: "Optional timeout behavior (e.g., 'escalate if >24h')."
+
+  "Risk":
+    type: "object"
+    required: ["risk_id", "title", "severity", "likelihood", "mitigation", "owner"]
+    properties:
+      risk_id:
+        type: "string"
+        description: "RISK-01, RISK-02, etc."
+      title:
+        type: "string"
+      severity:
+        type: "string"
+        enum: ["unacceptable", "high", "transparency", "minimal"]
+        description: "Unacceptable = venture blocker. High = must mitigate. Transparency = disclose. Minimal = monitor."
+      likelihood:
+        type: "string"
+        enum: ["certain", "likely", "possible", "unlikely"]
+      description:
+        type: "string"
+      mitigation:
+        type: "string"
+        description: "Concrete control or action to reduce severity or likelihood."
+      owner:
+        type: "string"
+        description: "Who owns this risk post-launch."
+
+  "Brand Token":
+    type: "object"
+    required: ["token_id", "category", "value", "usage_rule"]
+    properties:
+      token_id:
+        type: "string"
+        description: "BRAND-COLOR-01, BRAND-MOTION-01, etc."
+      category:
+        type: "string"
+        enum: ["color", "typography", "spacing", "motion", "imagery", "tone", "3d_asset"]
+      value:
+        type: "string"
+        description: "Hex color, font family, motion easing function, tone example, etc."
+      usage_rule:
+        type: "string"
+        description: "When and how to apply this token (e.g., 'Primary action buttons only', 'All headings, no body text')."
+      accessibility_note:
+        type: "string"
+        description: "WCAG contrast ratios, motion triggers, or other a11y guidance."
+
+  "Campaign Phase":
+    type: "object"
+    required: ["phase_id", "name", "duration", "channels", "objectives", "primary_artifact"]
+    properties:
+      phase_id:
+        type: "string"
+        description: "PHASE-01, PHASE-02, etc."
+      name:
+        type: "string"
+        enum: ["teaser", "reveal", "education", "conversion", "sustain"]
+      duration:
+        type: "string"
+        description: "Timeline (e.g., 'Week 1–2')."
+      channels:
+        type: "array"
+        items:
+          type: "string"
+        description: "[email, twitter, blog, product_hunt, conference, etc.]"
+      objectives:
+        type: "array"
+        items:
+          type: "string"
+        description: "Campaign KPI (e.g., 'Establish thought leadership in autonomous validation')."
+      primary_artifact:
+        type: "string"
+        description: "Main content (video, article, demo, etc.)."
+
+  "Executive Narrative Claim":
+    type: "object"
+    required: ["claim_id", "claim", "product_mechanic", "evidence_confidence"]
+    properties:
+      claim_id:
+        type: "string"
+        description: "CLAIM-01, CLAIM-02, etc."
+      claim:
+        type: "string"
+        description: "The narrative assertion (e.g., 'We reduce integration time by 40%')."
+      product_mechanic:
+        type: "string"
+        description: "How the product actually achieves this. If blank or vague, flag as risk."
+      evidence_confidence:
+        type: "string"
+        enum: ["high", "medium", "low", "unvalidated"]
+        description: "Confidence that the product mechanic will deliver the claim in production."
+      narrative_override_flag:
+        type: "boolean"
+        description: "If true, narrative assertion exceeds product confidence. Must be disclosed in risk register."
+
+templates:
+  market_requirement_template:
+    brief: |
+      ---
+      id: "MKT-01"
+      pain_statement: "[PLACEHOLDER: User-facing pain, single sentence]"
+      target_users:
+        - segment_id: "USER-SEGMENT-01"
+          role: "[PLACEHOLDER: e.g., Defense Systems Engineer]"
+          frequency: "[PLACEHOLDER: e.g., Daily]"
+          willingness_to_pay: "[PLACEHOLDER: Low/Medium/High or $ range]"
+      minimum_utility: "[PLACEHOLDER: Smallest outcome that solves pain]"
+      constraints:
+        - "[PLACEHOLDER: e.g., Must comply with ITAR, can only run on-prem]"
+      success_criteria:
+        - "[PLACEHOLDER: e.g., User completes core task in <5 min]"
+      evidence_source:
+        source_quality: "untested"
+        confidence_level: "unvalidated"
+        validation_count: 0
+        notes: "Placeholder. Replace with actual user interviews."
+      ---
+
+  product_entity_template:
+    brief: |
+      entity_id: "PROD-01"
+      name: "[PLACEHOLDER: Entity name, e.g., Calibration Task]"
+      attributes:
+        - attr_name: "id"
+          type: "uuid"
+          required: true
+          description: "Unique identifier"
+        - attr_name: "[PLACEHOLDER: attribute name]"
+          type: "[PLACEHOLDER: type]"
+          required: "[PLACEHOLDER: true/false]"
+          description: "[PLACEHOLDER: description]"
+      permissions:
+        create: "[PLACEHOLDER: who can create]"
+        read: "[PLACEHOLDER: who can read]"
+        update: "[PLACEHOLDER: who can update]"
+        delete: "[PLACEHOLDER: who can delete]"
+      lifecycle:
+        - "created"
+        - "[PLACEHOLDER: state name]"
+        - "archived"
+
+  risk_template:
+    brief: |
+      risk_id: "RISK-01"
+      title: "[PLACEHOLDER: Risk title]"
+      severity: "high"
+      likelihood: "likely"
+      description: "[PLACEHOLDER: Why this risk exists]"
+      mitigation: "[PLACEHOLDER: Concrete control or action]"
+      owner: "[PLACEHOLDER: Name or role post-launch]"
+
+  brand_token_template:
+    brief: |
+      token_id: "BRAND-COLOR-01"
+      category: "color"
+      value: "#1A1A1A"
+      usage_rule: "[PLACEHOLDER: e.g., Primary action buttons, no body text]"
+      accessibility_note: "[PLACEHOLDER: e.g., WCAG AAA contrast ratio 7:1 against white]"
+
+  campaign_phase_template:
+    brief: |
+      phase_id: "PHASE-01"
+      name: "teaser"
+      duration: "Week 1–2"
+      channels:
+        - "twitter"
+        - "email"
+      objectives:
+        - "[PLACEHOLDER: Campaign objective]"
+      primary_artifact: "[PLACEHOLDER: e.g., 60-second demo video]"
+
+  narrative_claim_template:
+    brief: |
+      claim_id: "CLAIM-01"
+      claim: "[PLACEHOLDER: Executive narrative assertion, e.g., 'Reduces integration time by 40%']"
+      product_mechanic: "[PLACEHOLDER: How product actually achieves this]"
+      evidence_confidence: "medium"
+      narrative_override_flag: false

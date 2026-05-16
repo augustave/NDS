@@ -1,0 +1,4 @@
+interface:
+  display_name: "Autonomous Venture Studio"
+  short_description: "0-to-1 product, brand, and narrative orchestration"
+  default_prompt: "Use $autonomous-venture-studio to turn this venture brief into a coordinated product, brand, and executive narrative plan."
